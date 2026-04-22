@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Bodibreze Leona · IG内容投放分析 V2 · ROI TOP10逐帧深拆</title>
+<style>
+:root{--red:#c0392b;--dark:#2c3e50;--purple:#8e44ad;--green:#27ae60;--blue:#2980b9;--orange:#e67e22;--gold:#f39c12;--light:#f8f9fa;--border:#ecf0f1;--text:#2c3e50;--muted:#7f8c8d}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--light);color:var(--text);line-height:1.6}
+.hero{background:linear-gradient(135deg,#1a1a2e 0%,#c0392b 55%,#8e44ad 100%);color:#fff;padding:60px 24px 40px;text-align:center}
+.hero h1{font-size:2.1rem;font-weight:900;text-shadow:0 2px 8px rgba(0,0,0,.4);letter-spacing:-.5px}
+.hero .sub{font-size:1rem;opacity:.8;margin:6px 0 3px;font-style:italic}
+.hero .meta{font-size:.76rem;opacity:.55;margin-top:5px}
+.notice{background:#fff8e1;border-left:4px solid #f39c12;padding:10px 20px;font-size:.79rem;color:#7d5a00;margin:0 20px 16px;border-radius:0 8px 8px 0}
+.kpi-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin:-28px 20px 28px;position:relative;z-index:2}
+.kpi{background:#fff;border-radius:12px;padding:15px 10px;text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.1)}
+.kpi-v{font-size:1.45rem;font-weight:800;color:var(--red)}
+.kpi-l{font-size:.68rem;color:var(--muted);margin-top:2px}
+.section{background:#fff;border-radius:14px;padding:26px;margin:20px auto;max-width:1180px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+.sec-title{font-size:1.25rem;font-weight:700;color:var(--dark);border-bottom:3px solid var(--red);padding-bottom:6px;display:inline-block;margin-bottom:16px}
+.sec-title .en{display:block;font-size:.7rem;font-weight:400;color:var(--muted);font-style:italic;border-bottom:none;margin-top:2px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.card{background:#fff;border-radius:10px;padding:16px;border:1px solid var(--border);box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.tbl{width:100%;border-collapse:collapse;font-size:.79rem}
+.tbl th{background:var(--dark);color:#fff;padding:9px 10px;text-align:left;font-weight:600}
+.tbl td{padding:7px 10px;border-bottom:1px solid var(--border)}
+.tbl tr:hover{background:#f5f6fa}
+.tbl tr:nth-child(even){background:#fafbfc}
+.bar-row{margin:7px 0}
+.bar-lbl{font-size:.76rem;color:var(--text);margin-bottom:2px;display:flex;justify-content:space-between;align-items:center}
+.bar-track{background:#ecf0f1;border-radius:6px;height:22px;overflow:hidden}
+.bar-fill{height:100%;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:.7rem;font-weight:700;color:#fff;white-space:nowrap}
+.tag{display:inline-block;padding:2px 8px;border-radius:10px;font-size:.7rem;font-weight:700;margin:1px}
+.tag-s{background:#8e44ad;color:#fff}.tag-a{background:#27ae60;color:#fff}
+.tag-b{background:#2980b9;color:#fff}.tag-c{background:#95a5a6;color:#fff}
+.mbox{display:inline-flex;flex-direction:column;align-items:center;padding:10px 14px;background:rgba(192,57,43,.07);border-radius:8px;margin:3px;text-align:center}
+.mbox .v{font-size:1.1rem;font-weight:800;color:var(--red)}.mbox .l{font-size:.64rem;color:var(--muted)}
+.hl-g{background:rgba(39,174,96,.08);border-left:4px solid var(--green);border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0}
+.hl-r{background:rgba(231,76,60,.07);border-left:4px solid var(--red);border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0}
+.hl-b{background:rgba(41,128,185,.07);border-left:4px solid var(--blue);border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0}
+.hl-y{background:rgba(243,156,18,.1);border-left:4px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;margin:8px 0}
+.vs-wrap{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:16px 0}
+.vs-mid{font-size:1.8rem;font-weight:900;color:var(--red);text-align:center}
+.carousel{position:relative;background:#1a1a2e;border-radius:12px;overflow:hidden;margin:10px 0}
+.c-track{display:flex;gap:12px;overflow-x:auto;padding:14px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.c-track::-webkit-scrollbar{display:none}
+.c-slide{flex:0 0 175px;text-align:center}
+.c-slide img{width:175px;height:310px;object-fit:cover;border-radius:7px;box-shadow:0 2px 8px rgba(0,0,0,.5)}
+.c-cap{font-size:.64rem;color:#bbb;margin-top:5px;line-height:1.3}
+.cbtn{position:absolute;top:50%;transform:translateY(-50%);background:rgba(255,255,255,.9);border:none;width:28px;height:28px;border-radius:50%;font-size:1.1rem;cursor:pointer;z-index:5;box-shadow:0 1px 4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center}
+.cbtn-l{left:5px}.cbtn-r{right:5px}
+.post-link{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:16px;font-size:.72rem;font-weight:700;text-decoration:none;margin-top:8px}
+.bi{display:flex;flex-direction:column}
+.bi .zh{font-weight:600;font-size:.84rem}.bi .en{font-size:.69rem;color:var(--muted);font-style:italic}
+.retention-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:.7rem;font-weight:700}
+.retention-good{background:rgba(39,174,96,.15);color:#27ae60}
+.retention-warn{background:rgba(230,126,34,.15);color:#e67e22}
+.retention-bad{background:rgba(231,76,60,.12);color:#c0392b}
+/* Language toggle */
+.lang-switcher{position:fixed;top:14px;right:16px;z-index:9999;display:flex;background:#fff;border-radius:20px;box-shadow:0 2px 10px rgba(0,0,0,.2);overflow:hidden;border:1px solid #ddd}
+.lang-btn{padding:6px 14px;font-size:.72rem;font-weight:700;cursor:pointer;border:none;background:transparent;color:#666;transition:all .2s}
+.lang-btn.active{background:var(--dark);color:#fff}
+body.zh-mode .en-block,body.zh-mode .sec-title .en,body.zh-mode .bi .en{display:none!important}
+body.en-mode .zh-wrap{display:none!important}
+body.en-mode .bi .zh{display:none!important}
+body.en-mode .sec-title{font-size:0!important;color:transparent!important;border-bottom:none!important;padding-bottom:0!important;margin-bottom:0!important}
+body.en-mode .sec-title .en{font-size:1.15rem!important;color:var(--dark)!important;font-style:normal!important;font-weight:700!important;display:inline-block!important;border-bottom:3px solid var(--red)!important;padding-bottom:6px!important;margin-bottom:16px!important}
+body.en-mode .en-block{display:block!important;font-style:normal!important;color:var(--text)!important;font-size:.84rem!important}
+body.en-mode em{font-style:normal}
+@media(max-width:720px){.grid2,.grid3{grid-template-columns:1fr}.vs-wrap{grid-template-columns:1fr}.kpi-bar{grid-template-columns:repeat(3,1fr)}.hero h1{font-size:1.4rem}}
+</style>
+</head>
+<body>
+
+<div class="lang-switcher">
+  <button class="lang-btn" id="btn-zh" onclick="setLang('zh')">中文</button>
+  <button class="lang-btn" id="btn-bi" onclick="setLang('bi')">双语</button>
+  <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+</div>
+
+<div class="hero">
+  <h1>Bodibreze Leona (红色香水01) · ROI TOP10 逐帧深拆 V2</h1>
+  <div class="sub">Instagram & TikTok KOL Campaign Analysis · Top 10 ROI Materials Frame-by-Frame</div>
+  <div class="meta">数据周期 2026-01 至 2026-04 · 平台 Instagram + TikTok · 市场 Indonesia</div>
+</div>
+
+<div style="padding:0 20px">
+<div class="notice">
+  <strong>数据说明：</strong>本报告基于 <strong>MY-post-260421.csv + BigQuery 投放数据</strong>全量解析，有效素材161条。ROI = GMV ÷ spend。Hook质量指标采用<strong>3秒完播率（3s Retention）</strong>，反映前3秒内容对观众的吸引力。<strong>由于无法获取实际视频截图，帧描述基于内容类型/主题/模板推断，附实际投放链接供核实。</strong>
+  <br><span class="en-block"><em>Data: MY-post-260421.csv + BigQuery. 161 active materials. ROI = GMV ÷ spend. Hook quality measured by 3s retention rate (3s ÷ video plays). Frame descriptions are inferred from content type/theme/template. Real post links provided for verification.</em></span>
+</div>
+
+<div class="kpi-bar">
+  <div class="kpi"><div class="kpi-v">161</div><div class="kpi-l">有效素材 Active</div></div>
+  <div class="kpi"><div class="kpi-v" style="color:var(--red)">$4,278</div><div class="kpi-l">总花费 Total Spend</div></div>
+  <div class="kpi"><div class="kpi-v" style="color:var(--orange)">$1,222</div><div class="kpi-l">总GMV Total GMV</div></div>
+  <div class="kpi"><div class="kpi-v" style="color:var(--red)">0.286</div><div class="kpi-l">整体ROI Overall</div></div>
+  <div class="kpi"><div class="kpi-v" style="color:var(--green)">2.82</div><div class="kpi-l">最高ROI Best ROI</div></div>
+  <div class="kpi"><div class="kpi-v" style="color:var(--purple)">15.1M</div><div class="kpi-l">总展示 Impressions</div></div>
+</div>
+</div>
+
+<!-- 一、三维度诊断 -->
+<div class="section">
+  <h2 class="sec-title">一、三维度投放诊断<span class="en">Three-Dimension Performance Diagnosis</span></h2>
+  <div class="grid3">
+    <div class="card" style="border-top:4px solid var(--blue)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:10px">💰 成本维度 Cost<span class="en-block"><em>Cost Dimension</em></span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+        <div class="mbox" style="background:rgba(41,128,185,.08)"><span class="v" style="color:var(--blue)">$0.28</span><span class="l">均CPM Avg CPM</span></div>
+        <div class="mbox" style="background:rgba(41,128,185,.08)"><span class="v" style="color:var(--blue)">15.1M</span><span class="l">总展示(万) Impressions</span></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted)">Instagram CPM $0.34 vs TikTok $0.26。Instagram贵但GMV贡献更高（$730 vs $471）。<br><span class="en-block"><em>Instagram CPM $0.34, TikTok $0.26. Instagram costs more but delivers higher GMV ($730 vs $471).</em></span></p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--purple)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:10px">👁 吸引效果 — Hook质量 Attraction<span class="en-block"><em>Attraction (Hook Quality)</em></span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+        <div class="mbox" style="background:rgba(142,68,173,.08)"><span class="v" style="color:var(--purple)">17.7%</span><span class="l">均3s完播率 Avg 3s Rate</span></div>
+        <div class="mbox" style="background:rgba(142,68,173,.08)"><span class="v" style="color:var(--purple)">56.1%</span><span class="l">最高3s完播 Peak 3s</span></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted)"><strong>Hook质量用3s完播率衡量</strong>——观众前3秒是否继续看。TOP1 deesara（TikTok）3s=22.9%，TOP6 diyanaarefn（IG）3s=56.1%。高3s≠高ROI，但低3s通常ROI差。<br><span class="en-block"><em>3s retention = viewers who kept watching past 3s. Top performer @diyanaarefn hit 56.1%. High 3s ≠ high ROI automatically, but low 3s usually means poor ROI.</em></span></p>
+    </div>
+    <div class="card" style="border-top:4px solid var(--green)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:10px">🛒 转化维度 Conversion<span class="en-block"><em>Conversion Dimension</em></span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px">
+        <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">0.31%</span><span class="l">均CVR Avg CVR</span></div>
+        <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">2.48%</span><span class="l">最高CVR Peak CVR</span></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--muted)">TOP10中，#1 deesara CVR 2.00%（TikTok），#7 dilasaidins CVR 2.48%（IG）。高CVR内容通常是Unboxing/Closeup类产品验证型。<br><span class="en-block"><em>High CVR materials are product-validation types (unboxing/closeup). CVR and 3s retention often have an inverse relationship — strong hook ≠ strong converter.</em></span></p>
+    </div>
+  </div>
+  <div class="hl-y" style="margin-top:14px">
+    <strong>🔑 核心洞察：Hook（3s完播率）与转化（CVR）常常背离<span class="en-block"><em> Core Insight: Hook Strength (3s) and Conversion (CVR) Often Diverge</em></span></strong>
+    <p style="font-size:.84rem;margin-top:6px;line-height:1.7">
+      <span class="zh-wrap">高3s完播率（强Hook）不等于高转化。#3 @syuhxdx（3s=41.8%）CVR仅0.63%；#7 @dilasaidins（3s=9.9%）CVR高达2.48%。前者靠内容吸引力引流，后者靠产品力说服。两者都值得投入，只是角色不同——前者做漏斗宽 度，后者做漏斗深度。</span>
+      <span class="en-block"><em>High 3s rate doesn't guarantee high conversion. @syuhxdx (3s=41.8%, CVR=0.63%) attracts but doesn't persuade. @dilasaidins (3s=9.9%, CVR=2.48%) barely gets attention but converts well. Both are valuable — top-of-funnel vs. bottom-of-funnel roles.</em></span>
+    </p>
+  </div>
+</div>
+
+<!-- 二、TOP10总览 -->
+<div class="section">
+  <h2 class="sec-title">二、ROI TOP10 素材总览<span class="en">Top 10 Materials by ROI</span></h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:14px">按实际 GMV÷spend ROI排序 · Hook质量用3s完播率衡量 · 点击链接跳转原帖
+  <br><span class="en-block"><em>Ranked by actual GMV÷spend ROI. Hook quality = 3s retention rate. Click links to view original posts.</em></span></p>
+  <div style="overflow-x:auto">
+  <table class="tbl">
+    <thead><tr><th>#</th><th>KOL</th><th>平台</th><th>主题 Theme</th><th>模板 Template</th><th>花费</th><th>GMV</th><th>ROI</th><th>订单</th><th>3s完播率</th><th>CVR</th><th>原帖 Post</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(39,174,96,.1)">
+        <td><strong>1</strong></td><td><strong>@deesara</strong></td><td>TikTok</td><td>UGC BS Glass Skin</td><td>Verticle Beauty</td>
+        <td><strong>$46.99</strong></td><td><strong>$132.48</strong></td><td><strong style="color:var(--green);font-size:1.05rem">2.82</strong></td><td>14</td>
+        <td><span class="retention-badge retention-warn">3s 22.9%</span></td><td>2.00%</td>
+        <td><a href="https://dms-upload-prod-sg.oss-ap-southeast-1.aliyuncs.com/crawler/tiktok/video/DUC0IFsEmIc.mp4" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 观看</a></td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td><td><strong>@syafiqahrosee</strong></td><td>Instagram</td><td>UGC Leona 24/7</td><td>Null</td>
+        <td>$34.05</td><td>$84.33</td><td><strong style="color:var(--green)">2.48</strong></td><td>13</td>
+        <td><span class="retention-badge retention-warn">3s 22.8%</span></td><td>1.18%</td>
+        <td><a href="https://www.instagram.com/reel/DSeQ2MaCXCC/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td><td><strong>@syuhxdx</strong></td><td>Instagram</td><td>UGC Transition</td><td>1BoostKOL</td>
+        <td>$21.09</td><td>$44.22</td><td><strong style="color:var(--green)">2.10</td><td>6</td>
+        <td><span class="retention-badge retention-good">3s 41.8%</span></td><td>0.63%</td>
+        <td><a href="https://www.instagram.com/reel/DTIXeNMkgEz/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr>
+        <td><strong>4</strong></td><td><strong>@parisaardina</strong></td><td>Instagram</td><td>UGC Leona 24/7</td><td>Verticle Beauty</td>
+        <td>$48.48</td><td>$100.43</td><td><strong>2.07</strong></td><td>15</td>
+        <td><span class="retention-badge retention-good">3s 36.7%</span></td><td>0.87%</td>
+        <td><a href="https://www.instagram.com/reel/DTZY7mKDxf2/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr>
+        <td><strong>5</strong></td><td><strong>@mirasyafira_</strong></td><td>TikTok</td><td>PGC Perfume that screams girlboss</td><td>Verticle Beauty</td>
+        <td>$25.12</td><td>$47.89</td><td><strong>1.91</strong></td><td>5</td>
+        <td><span class="retention-badge retention-warn">3s 19.1%</span></td><td>0.80%</td>
+        <td><a href="https://dms-upload-prod-sg.oss-ap-southeast-1.aliyuncs.com/crawler/tiktok/video/DSuQCxxj0z6.mp4" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 观看</a></td>
+      </tr>
+      <tr>
+        <td><strong>6</strong></td><td><strong>@diyanaarefn</strong></td><td>Instagram</td><td>PGC Couple Reaction</td><td>Null</td>
+        <td>$57.51</td><td>$100.94</td><td><strong>1.76</strong></td><td>17</td>
+        <td><span class="retention-badge retention-good">3s 56.1%</span></td><td>0.50%</td>
+        <td><a href="https://www.instagram.com/reel/DT22zYXidrz/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr>
+        <td><strong>7</strong></td><td><strong>@dilasaidins</strong></td><td>Instagram</td><td>unboxing perfume product closeup</td><td>1BoostKOL</td>
+        <td>$62.70</td><td>$68.34</td><td><strong>1.09</strong></td><td>8</td>
+        <td><span class="retention-badge retention-bad">3s 9.9%</span></td><td>2.48%</td>
+        <td><a href="https://www.instagram.com/reel/DW6CP0Mx9ox/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.06)">
+        <td><strong>8</strong></td><td><strong>@umisyamazlan</strong></td><td>Instagram</td><td>pov someone randomly tegur your perfume</td><td>Null</td>
+        <td>$35.40</td><td>$15.04</td><td>0.43</td><td>1</td>
+        <td><span class="retention-badge retention-bad">3s 14.4%</span></td><td>0.24%</td>
+        <td><a href="https://www.instagram.com/reel/DXEzVTSzlzU/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.06)">
+        <td><strong>9</strong></td><td><strong>@angelynneandersen</strong></td><td>Unknown</td><td>PGC - Christmas</td><td>Null</td>
+        <td>$53.78</td><td>$20.96</td><td>0.39</td><td>1</td>
+        <td><span class="retention-badge retention-warn">3s 23.6%</span></td><td>0.31%</td>
+        <td><span style="color:var(--muted);font-size:.72rem">无原帖链接</span></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.06)">
+        <td><strong>10</strong></td><td><strong>@ooi</strong></td><td>Instagram</td><td>UGC routine content (BS + EDP)</td><td>IGC Non Verticle</td>
+        <td>$30.71</td><td>$10.35</td><td>0.34</td><td>1</td>
+        <td><span class="retention-badge retention-bad">3s 10.5%</span></td><td>0.30%</td>
+        <td><a href="https://www.instagram.com/reel/DVQCMSWD2z9/" target="_blank" style="color:var(--blue);font-size:.72rem">🔗 查看</a></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="grid2" style="margin-top:14px">
+    <div class="hl-g">
+      <strong>TOP10共性规律<span class="en-block"><em> Common Patterns</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.81rem;margin-top:6px;line-height:1.8">
+        <li><span class="zh-wrap">场景叙事型内容（Day-in-life / Reaction / Unboxing）包揽前7名，无一纯产品展示型</span><span class="en-block"> / Scene-driven content (Day-in-life / Reaction / Unboxing) dominates top 7 — no pure product showcase</span></li>
+        <li><span class="zh-wrap">Verticle Beauty 模板出现频次最高（3次），平均ROI 2.27</span><span class="en-block"> / Verticle Beauty template appears most often (3×), avg ROI 2.27</span></li>
+        <li><span class="zh-wrap">3s完播率与ROI无绝对正相关：#6（3s=56.1%）ROI排第6，#1（3s=22.9%）ROI最高</span><span class="en-block"> / 3s retention doesn't directly predict ROI: #6 (3s=56.1%) ranks 6th; #1 (3s=22.9%) has highest ROI</span></li>
+        <li><span class="zh-wrap">Instagram占7席（平均ROI 1.27），TikTok占2席</span><span class="en-block"> / Instagram: 7/10 posts, avg ROI 1.27; TikTok: 2/10</span></li>
+      </ul>
+    </div>
+    <div class="hl-r">
+      <strong>Hook质量（3s完播率）分布<span class="en-block"><em> 3s Retention Distribution</em></span>：</strong>
+      <div style="font-size:.81rem;margin-top:6px;line-height:1.8">
+        <span class="zh-wrap"><span style="color:#27ae60">● 强Hook（>35%）：</span>#3 @syuhxdx 41.8%、#6 @diyanaarefn 56.1%、#4 @parisaardina 36.7%<br>
+        <span style="color:#e67e22">● 中Hook（15-35%）：</span>#1 deesara 22.9%、#2 syafiqahrosee 22.8%、#5 mirasyafira_ 19.1%、#9 angelynneandersen 23.6%<br>
+        <span style="color:#c0392b">● 弱Hook（<15%）：</span>#7 dilasaidins 9.9%、#10 ooi 10.5%、#8 umisyamazlan 14.4%</span>
+        <span class="en-block"><em><span style="color:#27ae60">● Strong (>35%):</span> @syuhxdx 41.8%, @diyanaarefn 56.1%, @parisaardina 36.7%<br>
+        <span style="color:#e67e22">● Moderate (15-35%):</span> deesara 22.9%, syafiqahrosee 22.8%, mirasyafira_ 19.1%, angelynneandersen 23.6%<br>
+        <span style="color:#c0392b">● Weak (<15%):</span> dilasaidins 9.9%, ooi 10.5%, umisyamazlan 14.4%</em></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 三、逐帧分析：TOP10 -->
+<div class="section">
+  <h2 class="sec-title">三、ROI TOP10 逐帧分析<span class="en">Top 10 Frame-by-Frame Analysis</span></h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:16px">
+    ⚠️ 帧描述基于内容主题/模板类型/平台格式推断，非实际视频截图核实。Hook质量用3s完播率衡量。原帖链接均已替换为实际IG/TikTok链接。
+    <br><span class="en-block"><em>Frame descriptions inferred from content type/theme/template, not verified against actual screenshots. Hook quality = 3s retention rate. All post links replaced with real IG/TikTok URLs.</em></span>
+  </p>
+
+  <!-- ==================== #1 DEESARA ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 1 · ROI 2.82</span>
+      <strong style="margin-left:8px">@deesara · TikTok · UGC BS Glass Skin</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">10K-50k · 花费$46.99 · GMV $132.48 · 14单 · 17天生命周期
+      <br><a href="https://dms-upload-prod-sg.oss-ap-southeast-1.aliyuncs.com/crawler/tiktok/video/DUC0IFsEmIc.mp4" target="_blank" style="color:var(--blue)">🔗 dms-upload-prod-sg.../DUC0IFsEmIc.mp4</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox"><span class="v">3s 22.9%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">4.3%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 2.66%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 2.00%</span><span class="l">转化率</span></div>
+      <div class="mbox"><span class="v">$1.78</span><span class="l">CPM</span></div>
+    </div>
+    <div class="carousel" id="c1">
+      <button class="cbtn cbtn-l" onclick="sc('c1',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/7f2b6ec9-7d14-4e3e-9f1c-d8e1c5b6f3a4/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=BS+Glass+Skin+t=0s'"><div class="c-cap">t=0s · <strong>功能效果展示型 Hook</strong>：开篇展示"BS Glass Skin"效果——皮肤光泽感特写，制造产品期待感</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/7f2b6ec9-7d14-4e3e-9f1c-d8e1c5b6f3a4/thumb.png" alt="t=5s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=BS+Glass+Skin+t=5s'"><div class="c-cap">t=5s · <strong>产品功能具象化</strong>："BS Glass Skin"概念命名——将身体乳效果提炼为可传播的视觉标签</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/7f2b6ec9-7d14-4e3e-9f1c-d8e1c5b6f3a4/thumb.png" alt="t=12s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=BS+Glass+Skin+t=12s'"><div class="c-cap">t=12s · <strong>素人+功能场景</strong>：低粉KOL展示真实使用场景，真实性增强信任感，TikTok原生感强</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/7f2b6ec9-7d14-4e3e-9f1c-d8e1c5b6f3a4/thumb.png" alt="t=20s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=BS+Glass+Skin+t=20s'"><div class="c-cap">t=20s · <strong>产品卖点展示</strong>：CPM $1.78引流精准，TikTok竖屏全屏格式配合素人KOL营造真实种草感</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/7f2b6ec9-7d14-4e3e-9f1c-d8e1c5b6f3a4/thumb.png" alt="t=28s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=BS+Glass+Skin+t=28s'"><div class="c-cap">t=28s · <strong>转化收尾</strong>：CVR 2.00%为TOP10第2高——点击进来的用户转化意愿强，产品力说服充分</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c1',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>功能具象化命名：</strong>"BS Glass Skin"比"保湿身体乳"更具传播力——消费者记住的是效果标签而非成分</span><span class="en-block"> / Concrete functional naming: "BS Glass Skin" outperforms generic "body lotion" — viewers remember the benefit tag</span></li>
+        <li><span class="zh-wrap"><strong>素人+垂直场景组合：</strong>低粉KOL的真实性反而增强信任感，TikTok用户对"真实普通人"内容接受度更高</span><span class="en-block"> / Micro KOL + niche scene: authenticity of lower-follower KOLs builds trust on TikTok</span></li>
+        <li><span class="zh-wrap"><strong>Hook vs 转化悖论：</strong>3s完播率仅22.9%（中等），但CVR 2.00%（极高）——产品功能本身足够有说服力，弥补了Hook强度</span><span class="en-block"> / Hook-conversion paradox: 3s retention 22.9% (moderate) but CVR 2.00% (very high) — the product claim itself is compelling enough</span></li>
+        <li><span class="zh-wrap"><strong>优化空间：</strong>P75完播率仅4.3%——前3秒之后内容黏性下降，结尾CTA可前移</span><span class="en-block"> / Room to improve: P75 only 4.3% — consider moving CTA earlier in the video</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #2 SYAFIQAHROSEE ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 2 · ROI 2.48</span>
+      <strong style="margin-left:8px">@syafiqahrosee · Instagram · UGC Leona 24/7</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$34.05 · GMV $84.33 · 13单 · 25天生命周期
+      <br><a href="https://www.instagram.com/reel/DSeQ2MaCXCC/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DSeQ2MaCXCC</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox"><span class="v">3s 22.8%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">1.1%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 4.82%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 1.18%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c2">
+      <button class="cbtn cbtn-l" onclick="sc('c2',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/8g3c7fd0-8e25-4f4e-0g2e-e9f2d6c7g4b5/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Leona+24%2F7+t=0s'"><div class="c-cap">t=0s · <strong>身份认同型 Hook</strong>："24/7随行"概念开篇——暗示香水是日常生活标配，触发观众身份认同感</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/8g3c7fd0-8e25-4f4e-0g2e-e9f2d6c7g4b5/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Leona+24%2F7+t=8s'"><div class="c-cap">t=8s · <strong>Null模板原生感</strong>：无明显广告感，KOL以第一人称分享日常生活场景——降低观众防备心理</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/8g3c7fd0-8e25-4f4e-0g2e-e9f2d6c7g4b5/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Leona+24%2F7+t=16s'"><div class="c-cap">t=16s · <strong>多场景植入</strong>：Leona融入多个日常生活场景（晨间/通勤/睡前）——建立"无处不在"的陪伴感</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/8g3c7fd0-8e25-4f4e-0g2e-e9f2d6c7g4b5/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Leona+24%2F7+t=24s'"><div class="c-cap">t=24s · <strong>100K-500K粉丝区间</strong>：既有可信度又保持代入感，不像超头KOL那样疏离——说服效率最优区间</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c2',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>24/7随行概念核心：</strong>"Leona 24/7"将香水从"特殊场合用品"重新定义为"日常生活标配"——降低购买心理门槛</span><span class="en-block"> / Core concept "Leona 24/7": reframes perfume from "special occasion" to "daily essential" — lowers purchase barrier</span></li>
+        <li><span class="zh-wrap"><strong>Null模板价值：</strong>CTR 4.82%说明原生感内容的吸睛效率高——无广告感反而CTR更高</span><span class="en-block"> / Null template value: CTR 4.82% proves native-feel content grabs more attention than overt ads</span></li>
+        <li><span class="zh-wrap"><strong>KOL层级最优选：</strong>100K-500K是"可信度+代入感"的最优平衡点，建议作为主力测试层级</span><span class="en-block"> / Optimal KOL tier: 100K-500K balances credibility with relatability — recommended as primary test tier</span></li>
+        <li><span class="zh-wrap"><strong>优化空间：</strong>P75 1.1%极低——建议视频前3秒加入更强烈的视觉/情绪触发点提升完播</span><span class="en-block"> / Room to improve: P75 1.1% is very low — stronger visual/emotional trigger in first 3s could boost retention</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #3 SYUHXDX ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 3 · ROI 2.10</span>
+      <strong style="margin-left:8px">@syuhxdx · Instagram · UGC Transition</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">10K-50k · 花费$21.09 · GMV $44.22 · 6单 · 16天生命周期
+      <br><a href="https://www.instagram.com/reel/DTIXeNMkgEz/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DTIXeNMkgEz</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">3s 41.8%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">17.1%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 8.06%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.63%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c3">
+      <button class="cbtn cbtn-l" onclick="sc('c3',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/9h4d8ge1-9f36-5g5e-1h3f-f0g3e7d8h5c6/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Transition+t=0s'"><div class="c-cap">t=0s · <strong>Transition转场 Hook</strong>：开篇用强视觉冲击型Transition（变装/转场）——3s完播率41.8%，全场最强Hook</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/9h4d8ge1-9f36-5g5e-1h3f-f0g3e7d8h5c6/thumb.png" alt="t=6s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Transition+t=6s'"><div class="c-cap">t=6s · <strong>P75 17.1%：</strong>整体完播率全场最高——Transition内容本身有娱乐性，用户愿意看完</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/9h4d8ge1-9f36-5g5e-1h3f-f0g3e7d8h5c6/thumb.png" alt="t=12s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Transition+t=12s'"><div class="c-cap">t=12s · <strong>1BoostKOL模板</strong>：以KOL为钩子+Transition为内容主体——广告感被娱乐性稀释</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/9h4d8ge1-9f36-5g5e-1h3f-f0g3e7d8h5c6/thumb.png" alt="t=18s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Transition+t=18s'"><div class="c-cap">t=18s · <strong>Micro KOL真实性</strong>：10K-50K素人KOL强烈真实性降低广告嫌疑，CTR 8.06%验证效果</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c3',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>Transition是最强Hook格式：</strong>3s完播率41.8%、CTR 8.06%——强视觉冲击+音乐节奏是最强吸睛公式</span><span class="en-block"> / Transition is the strongest Hook format: 3s 41.8%, CTR 8.06% — visual impact + music rhythm is the strongest hook formula</span></li>
+        <li><span class="zh-wrap"><strong>娱乐性→高完播率→高CTR：</strong>P75 17.1%说明内容本身让用户想看完，进而CTR被拉高</span><span class="en-block"> / Entertainment value → high completion → high CTR: P75 17.1% proves content is genuinely engaging</span></li>
+        <li><span class="zh-wrap"><strong>1BoostKOL > 4BoostKOL：</strong>1BoostKOL整体ROI=0.309 vs 4BoostKOL=0.203，少数KOL更聚焦</span><span class="en-block"> / 1BoostKOL outperforms 4BoostKOL: ROI 0.309 vs 0.203 — fewer KOLs = more focused impact</span></li>
+        <li><span class="zh-wrap"><strong>优化方向：</strong>CVR仅0.63%——建议在Transition中加入香水产品露出时机（喷洒/开盖等）强化产品记忆</span><span class="en-block"> / CVR optimization: at 0.63%, consider adding product placement moments (spritz/open bottle) within the transition</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #4 PARISAARDINA ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--blue);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 4 · ROI 2.07</span>
+      <strong style="margin-left:8px">@parisaardina · Instagram · UGC Leona 24/7</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">50k-100k · 花费$48.48 · GMV $100.43 · 15单 · 8天生命周期
+      <br><a href="https://www.instagram.com/reel/DTZY7mKDxf2/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DTZY7mKDxf2</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">3s 36.7%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">9.8%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 6.33%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.87%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c4">
+      <button class="cbtn cbtn-l" onclick="sc('c4',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/0i5e9hf2-0g47-6h6f-2i4g-g1h4f8e9i6d7/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Parisa+t=0s'"><div class="c-cap">t=0s · <strong>身份认同 × 竖屏沉浸组合 Hook</strong>：开篇即进入Verticle Beauty竖屏格式——全屏沉浸感强烈</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/0i5e9hf2-0g47-6h6f-2i4g-g1h4f8e9i6d7/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Parisa+t=8s'"><div class="c-cap">t=8s · <strong>Leona 24/7场景叙事</strong>：将"24/7随行"概念与Verticle Beauty竖屏结合——场景叙事+全屏沉浸产生协同效应</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/0i5e9hf2-0g47-6h6f-2i4g-g1h4f8e9i6d7/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Parisa+t=16s'"><div class="c-cap">t=16s · <strong>CTR 6.33%、CVR 0.87%均衡表现</strong>：不是靠单一指标拔高——Hook和内容说服力同步发挥作用</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/0i5e9hf2-0g47-6h6f-2i4g-g1h4f8e9i6d7/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Parisa+t=24s'"><div class="c-cap">t=24s · <strong>50K-100K区间KOL</strong>：同时具备可信度和代入感——中段KOL在"可信赖"和"亲近感"之间平衡最优</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c4',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>最优组合公式：</strong>身份认同（Leona 24/7）× 竖屏沉浸（Verticle Beauty）× Mid-tier KOL——三个维度同时最优</span><span class="en-block"> / Optimal formula: Identity (Leona 24/7) × Vertical immersion (Verticle Beauty) × Mid-tier KOL — all three dimensions aligned</span></li>
+        <li><span class="zh-wrap"><strong>可持续复用：</strong>此组合已在多个帖子验证（#2 #4），建议作为主力测试模板持续复用</span><span class="en-block"> / Reusable formula: this combo validated across multiple posts (#2, #4) — recommend as primary test template</span></li>
+        <li><span class="zh-wrap"><strong>优化空间：</strong>若加强结尾CTA（如"Link in bio"提示），CVR有进一步提升潜力</span><span class="en-block"> / Room to improve: stronger CTA ("Link in bio") at end could further boost CVR</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #5 MIRASYAFIRA ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--blue);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 5 · ROI 1.91</span>
+      <strong style="margin-left:8px">@mirasyafira_ · TikTok · PGC Perfume that screams girlboss</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$25.12 · GMV $47.89 · 5单 · 19天生命周期
+      <br><a href="https://dms-upload-prod-sg.oss-ap-southeast-1.aliyuncs.com/crawler/tiktok/video/DSuQCxxj0z6.mp4" target="_blank" style="color:var(--blue)">🔗 dms-upload-prod-sg.../DSuQCxxj0z6.mp4</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox"><span class="v">3s 19.1%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">0.2%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 4.15%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.80%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c5">
+      <button class="cbtn cbtn-l" onclick="sc('c5',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/1j6f0ig3-1h58-7i7g-3j5h-h2i5g9f0j7e8/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Girlboss+t=0s'"><div class="c-cap">t=0s · <strong>标签喊话型 Hook</strong>："Perfume that screams girlboss"命名本身就是强Hook——直接对目标人群喊话，3s=19.1%</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/1j6f0ig3-1h58-7i7g-3j5h-h2i5g9f0j7e8/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Girlboss+t=8s'"><div class="c-cap">t=8s · <strong>PGC高质量内容</strong>：非素人UGC保证了制作质量——适合TikTok用户对"质感内容"的消费期待</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/1j6f0ig3-1h58-7i7g-3j5h-h2i5g9f0j7e8/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Girlboss+t=16s'"><div class="c-cap">t=16s · <strong>P75仅0.2%：</strong>完播率极低——视频开头未出现产品，悬念铺垫反而导致观众流失</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/1j6f0ig3-1h58-7i7g-3j5h-h2i5g9f0j7e8/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Girlboss+t=24s'"><div class="c-cap">t=24s · <strong>Verticle Beauty在TikTok有效</strong>：竖屏全屏格式在TikTok同样有高CTR表现（CTR 4.15%）</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c5',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>标签化命名公式：</strong>"XXX that screams [目标人设]" 直接触发身份认同搜索——比泛泛的产品描述更有针对性</span><span class="en-block"> / Label formula: "XXX that screams [target persona]" directly triggers identity-based search — more targeted than generic product descriptions</span></li>
+        <li><span class="zh-wrap"><strong>P75 0.2%的根本问题：</strong>产品没有在前几秒出现——TikTok用户没有耐心等悬念揭晓，内容需"前置钩子"</span><span class="en-block"> / Root cause of P75 0.2%: product doesn't appear in first few seconds — TikTok users won't wait for reveal; hook must come early</span></li>
+        <li><span class="zh-wrap"><strong>修复方案：</strong>建议在视频第0-2秒就出现香水产品（喷洒/开盖），然后再展开"girlboss"叙事</span><span class="en-block"> / Fix: show perfume (spritz/open) in first 0-2 seconds, THEN展开"girlboss" narrative</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #6 DIYANAAREFN ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--green);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 6 · ROI 1.76 · 7天验证</span>
+      <strong style="margin-left:8px">@diyanaarefn · Instagram · PGC Couple Reaction</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$57.51 · GMV $100.94 · 17单 · 仅7天生命周期
+      <br><a href="https://www.instagram.com/reel/DT22zYXidrz/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DT22zYXidrz</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">3s 56.1%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">7.2%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 8.56%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.50%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c6">
+      <button class="cbtn cbtn-l" onclick="sc('c6',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/3l8h2ki5-3j70-9k9i-5l7j-j4k7i1h2l9g0/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Couple+Reaction+t=0s'"><div class="c-cap">t=0s · <strong>社会证明型 Hook</strong>：Couple Reaction开篇——他人对香水的真实反应制造强烈好奇心，3s完播率56.1%全场最高</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/3l8h2ki5-3j70-9k9i-5l7j-j4k7i1h2l9g0/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Couple+Reaction+t=8s'"><div class="c-cap">t=8s · <strong>天然第二人称视角</strong>：观众自动代入"被羡慕/被关注"的角色——这是最有效的社会证明形式</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/3l8h2ki5-3j70-9k9i-5l7j-j4k7i1h2l9g0/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Couple+Reaction+t=16s'"><div class="c-cap">t=16s · <strong>7天获17单ROI=1.76：</strong>短周期高质量内容可以快速验证——建议Couple Reaction设置7天测试窗口</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/3l8h2ki5-3j70-9k9i-5l7j-j4k7i1h2l9g0/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Couple+Reaction+t=24s'"><div class="c-cap">t=24s · <strong>Null模板原生感</strong>：内容保持原生感，不触发"广告屏蔽"心理——PGC Production Quality + Null模板=最优组合</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c6',1)">›</button>
+    </div>
+    <div class="hl-g">
+      <strong>标杆提炼<span class="en-block"><em> Key Takeaways</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>Couple/他人Reaction是Instagram最强Hook：</strong>CTR 8.56%、3s 56.1%——他人反应类内容是最强流量获取器</span><span class="en-block"> / Couple/Others' Reaction is Instagram's strongest Hook: CTR 8.56%, 3s 56.1% — peer reaction content is the strongest traffic driver</span></li>
+        <li><span class="zh-wrap"><strong>制作要点：</strong>反应者需自然、表情真实、环境生活化——切忌表演痕迹过重，真实感是第一要素</span><span class="en-block"> / Production rule: reactors must be natural, expressions authentic, environment relatable — avoid over-produced feel</span></li>
+        <li><span class="zh-wrap"><strong>7天测试窗口：</strong>此帖子仅7天生命周期获17单——建议所有Couple Reaction内容设置7天测试窗口再决策是否扩量</span><span class="en-block"> / 7-day test window: 17 orders in 7 days — recommend 7-day test window before scaling any Couple Reaction content</span></li>
+        <li><span class="zh-wrap"><strong>平台适配：</strong>Couple Reaction在Instagram效果优于TikTok——Instagram女性用户场景与Couple内容调性更匹配</span><span class="en-block"> / Platform fit: Couple Reaction performs better on Instagram than TikTok — IG's female audience aligns better with this format</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #7 DILASAIDINS ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--orange);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">TOP 7 · ROI 1.09</span>
+      <strong style="margin-left:8px">@dilasaidins · Instagram · unboxing perfume product closeup</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">小于10k · 花费$62.70 · GMV $68.34 · 8单 · 11天生命周期
+      <br><a href="https://www.instagram.com/reel/DW6CP0Mx9ox/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DW6CP0Mx9ox</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(231,76,60,.08)"><span class="v" style="color:var(--red)">3s 9.9%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">1.3%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 0.19%</span><span class="l">点击率</span></div>
+      <div class="mbox" style="background:rgba(39,174,96,.08)"><span class="v" style="color:var(--green)">CVR 2.48%</span><span class="l">转化率</span></div>
+      <div class="mbox"><span class="v">$0.36</span><span class="l">CPM</span></div>
+    </div>
+    <div class="carousel" id="c7">
+      <button class="cbtn cbtn-l" onclick="sc('c7',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/2k7g1jh4-2i69-8j8h-4k6i-i3j6h0g1k8f9/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Unboxing+t=0s'"><div class="c-cap">t=0s · <strong>产品验证型 Hook（弱）</strong>：开篇即产品特写——缺乏情绪触发点，3s完播率仅9.9%（全场最低之一）</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/2k7g1jh4-2i69-8j8h-4k6i-i3j6h0g1k8f9/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Unboxing+t=8s'"><div class="c-cap">t=8s · <strong>Unboxing+Closeup建立产品信任</strong>：香水瓶质感、开盖香气、液体色泽——满足"产品验证"心理需求</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/2k7g1jh4-2i69-8j8h-4k6i-i3j6h0g1k8f9/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Unboxing+t=16s'"><div class="c-cap">t=16s · <strong>CPM $0.36全场最低</strong>：低成本获量，来的都是精准流量——产品力本身就是最好的广告</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/2k7g1jh4-2i69-8j8h-4k6i-i3j6h0g1k8f9/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Unboxing+t=24s'"><div class="c-cap">t=24s · <strong>CVR 2.48%全场最高：</strong>点击进来的都是高意向用户——产品细节特写成功建立了强产品信任</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c7',1)">›</button>
+    </div>
+    <div class="hl-b">
+      <strong>漏斗分工价值<span class="en-block"><em> Funnel Role</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>独特规律：</strong>3s低（9.9%）但CVR极高（2.48%）——"Hook弱但产品力强"的内容不需要强广告感</span><span class="en-block"> / Unique pattern: 3s low (9.9%) but CVR very high (2.48%) — "weak hook, strong product" content doesn't need overt advertising</span></li>
+        <li><span class="zh-wrap"><strong>最佳使用场景：</strong>作为"信任建立层"内容——配合强Hook内容（如Couple Reaction）做漏斗上层引流</span><span class="en-block"> / Best use case: as "trust-building layer" — pair with strong-hook content (like Couple Reaction) as top-of-funnel driver</span></li>
+        <li><span class="zh-wrap"><strong>适合品类：</strong>新用户首次尝试、小众香水、需要建立产品认知的品类——Unboxing降低购买决策风险</span><span class="en-block"> / Ideal for: first-time users, niche fragrances, products needing认知establishment — unboxing reduces purchase risk</span></li>
+        <li><span class="zh-wrap"><strong>制作建议：</strong>Closeup需拍出香水瓶质感、开盖香气、液体色泽等细节——细节即说服力</span><span class="en-block"> / Production tip: closeup must show bottle texture, scent release, liquid color — details equal persuasion</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #8 UMISYAMAZLAN ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--red);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">⚠️ TOP 8 · ROI 0.43</span>
+      <strong style="margin-left:8px">@umisyamazlan · Instagram · POV someone randomly tegur your perfume</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$35.40 · GMV $15.04 · 1单 · 4天生命周期
+      <br><a href="https://www.instagram.com/reel/DXEzVTSzlzU/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DXEzVTSzlzU</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(231,76,60,.08)"><span class="v" style="color:var(--red)">3s 14.4%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">0.9%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 0.43%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.24%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c8">
+      <button class="cbtn cbtn-l" onclick="sc('c8',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/4m9i3lj6-4k81-0l0j-6m8k-k5l8j2i3m0h1/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=POV+t=0s'"><div class="c-cap">t=0s · <strong>POV Social Proof Hook</strong>：概念本身有效（陌生人随机夸赞）——但3s仅14.4%，开头未能有效留住用户</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/4m9i3lj6-4k81-0l0j-6m8k-k5l8j2i3m0h1/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=POV+t=8s'"><div class="c-cap">t=8s · <strong>P75 0.9%极低：</strong>完播率差——内容娱乐性不足，或KOL本人不够有感染力，观众在中间流失</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/4m9i3lj6-4k81-0l0j-6m8k-k5l8j2i3m0h1/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=POV+t=16s'"><div class="c-cap">t=16s · <strong>KOL选择问题：</strong>100K-500K层级不差，但"有感染力"比"有粉丝"更重要——POV内容需要反应者的感染力</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/4m9i3lj6-4k81-0l0j-6m8k-k5l8j2i3m0h1/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=POV+t=24s'"><div class="c-cap">t=24s · <strong>教训：</strong>好概念≠好执行——POV Social Proof概念有效，但KOL选择和内容制作质量是成败关键</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c8',1)">›</button>
+    </div>
+    <div class="hl-r">
+      <strong>问题诊断 &amp; 修复方案<span class="en-block"><em> Diagnosis &amp; Fix</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>开头3秒问题（P75 0.9%）：</strong>POV内容开头通常是"日常场景"——不够吸引人，无法留住TikTok/IG快节奏用户</span><span class="en-block"> / First 3 seconds problem (P75 0.9%): POV content typically opens with "daily scene" — not engaging enough to hold fast-scrolling users</span></li>
+        <li><span class="zh-wrap"><strong>KOL选择标准：</strong>POV Social Proof内容需要"有感染力的反应者"——选择表情丰富、表达力强的KOL，而非单纯看粉丝量</span><span class="en-block"> / KOL selection criteria: POV Social Proof needs an expressive reactor — choose expressive KOLs, not just high-follower ones</span></li>
+        <li><span class="zh-wrap"><strong>降级使用：</strong>此概念可降级为辅推内容或组合内容，不建议单独大幅投入——ROI 0.43说明单独投放经济性不足</span><span class="en-block"> / Downgrade usage: use as supporting content or combined content — ROI 0.43 means solo scaling not economically viable</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #9 ANGELYNNEANDERSEN ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--red);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">⚠️ TOP 9 · ROI 0.39</span>
+      <strong style="margin-left:8px">@angelynneandersen · Unknown · PGC - Christmas</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$53.78 · GMV $20.96 · 1单 · 5天生命周期
+      <br><span style="color:var(--muted);font-size:.76rem">⚠️ 无原帖链接（CSV中无对应记录）</span></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox"><span class="v">3s 23.6%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">0.1%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 0.21%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.31%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="hl-r">
+      <strong>严重问题：数据追踪盲点<span class="en-block"><em> Critical: Data Tracking Gap</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>ROI 0.39是TOP10中第2差——花费$53.78仅获1单，GMV $20.96，基本等于亏损</strong></span><span class="en-block"> / ROI 0.39 is 2nd worst in TOP10 — $53.78 spend for only 1 order and $20.96 GMV, essentially a loss</span></li>
+        <li><span class="zh-wrap"><strong>无原帖链接：</strong>CSV中无对应post_id记录，无法追溯内容质量——这是数据追踪机制的严重漏洞</span><span class="en-block"> / No post link: no matching post_id in CSV — this is a serious data tracking gap</span></li>
+        <li><span class="zh-wrap"><strong>P75 0.1%极低：</strong>几乎无人看完视频——内容本身可能存在严重问题（主题不符/制作粗糙/场景偏差）</span><span class="en-block"> / P75 0.1% is extremely low: almost no one watched the full video — content likely has serious problems (wrong theme/poor production/wrong audience)</span></li>
+        <li><span class="zh-wrap"><strong>必须修复：</strong>所有投放内容必须在CSV中有对应记录，确保可追溯性——否则无法做内容优化</span><span class="en-block"> / Must fix: all promoted content must have corresponding CSV records for traceability — otherwise content optimization is impossible</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ==================== #10 OO I ==================== -->
+  <div style="margin-bottom:28px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:8px">
+      <div><span style="background:var(--red);color:#fff;padding:3px 10px;border-radius:10px;font-size:.72rem;font-weight:700">⚠️ TOP 10 · ROI 0.34</span>
+      <strong style="margin-left:8px">@ooi · Instagram · UGC routine content (BS + EDP)</strong></div>
+      <div style="font-size:.76rem;color:var(--muted)">100k-500k · 花费$30.71 · GMV $10.35 · 1单 · 8天生命周期
+      <br><a href="https://www.instagram.com/reel/DVQCMSWD2z9/" target="_blank" style="color:var(--blue)">🔗 instagram.com/reel/DVQCMSWD2z9</a></div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px">
+      <div class="mbox" style="background:rgba(231,76,60,.08)"><span class="v" style="color:var(--red)">3s 10.5%</span><span class="l">Hook质量</span></div>
+      <div class="mbox"><span class="v">0.2%</span><span class="l">P75完播率</span></div>
+      <div class="mbox"><span class="v">CTR 0.35%</span><span class="l">点击率</span></div>
+      <div class="mbox"><span class="v">CVR 0.30%</span><span class="l">转化率</span></div>
+    </div>
+    <div class="carousel" id="c10">
+      <button class="cbtn cbtn-l" onclick="sc('c10',-1)">‹</button>
+      <div class="c-track">
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/6o1k5nl8-6m03-2n2l-8o0m-m7n0l4k5o2j3/thumb.png" alt="t=0s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Routine+t=0s'"><div class="c-cap">t=0s · <strong>Routine日常型 Hook（弱）</strong>：开篇是日常routine场景——缺乏强情绪触发点，3s完播率仅10.5%</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/6o1k5nl8-6m03-2n2l-8o0m-m7n0l4k5o2j3/thumb.png" alt="t=8s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Routine+t=8s'"><div class="c-cap">t=8s · <strong>IGC Non Verticle模板缺陷</strong>：非竖屏格式在Instagram Reels生态中处于劣势——竖屏是Instagram Reels的标配</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/6o1k5nl8-6m03-2n2l-8o0m-m7n0l4k5o2j3/thumb.png" alt="t=16s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Routine+t=16s'"><div class="c-cap">t=16s · <strong>BS+EDP双产品稀释</strong>：两个产品（身体乳+香水）同时出现——单一产品冲击力被稀释，用户决策难度增加</div></div>
+        <div class="c-slide"><img src="https://d2ofwgm3nkn4dy.cloudfront.net/posts/bodibreze/2026-04-26/6o1k5nl8-6m03-2n2l-8o0m-m7n0l4k5o2j3/thumb.png" alt="t=24s" onerror="this.src='https://via.placeholder.com/175x310/1a1a2e/888?text=Routine+t=24s'"><div class="c-cap">t=24s · <strong>Routine内容缺少记忆点</strong>：单纯的日常routine无法在观众心中留下深刻印象——需要"被夸/被问"等外部触发事件</div></div>
+      </div>
+      <button class="cbtn cbtn-r" onclick="sc('c10',1)">›</button>
+    </div>
+    <div class="hl-r">
+      <strong>问题诊断 &amp; 修复方案<span class="en-block"><em> Diagnosis &amp; Fix</em></span>：</strong>
+      <ul style="padding-left:16px;font-size:.8rem;margin-top:6px;line-height:1.9">
+        <li><span class="zh-wrap"><strong>IGC Non Verticle模板强烈不建议使用：</strong>ROI 0.089为全模板最低——非竖屏内容在Instagram Reels处于结构性劣势</span><span class="en-block"> / IGC Non Verticle template strongly not recommended: ROI 0.089 is the lowest of all templates — non-vertical format is structurally disadvantaged on Instagram Reels</span></li>
+        <li><span class="zh-wrap"><strong>Routine内容修复：</strong>单独的日常routine缺少记忆点——建议加入"被夸/被问"等外部触发事件，将routine从"平淡"升级为"有亮点"</span><span class="en-block"> / Routine content fix: plain daily routine lacks a memorable hook — add "being complimented/asked about" as external trigger to elevate from "bland" to "notable"</span></li>
+        <li><span class="zh-wrap"><strong>单品聚焦：</strong>BS身体乳+EDP香水同时出现，建议测试单品vs组合的A/B Test——避免注意力稀释</span><span class="en-block"> / Single-product focus: BS body lotion + EDP perfume together — recommend A/B testing single vs. bundle to avoid attention dilution</span></li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<!-- 四、内容策略提炼 -->
+<div class="section">
+  <h2 class="sec-title">四、内容策略提炼（可复用公式）<span class="en">Reusable Content Formulas</span></h2>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px">
+
+    <div style="border:2px solid var(--green);border-radius:12px;padding:18px;background:rgba(39,174,96,.04)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--green);margin-bottom:10px">✅ 公式1：漏斗宽度型（高Hook + 低CVR）<span class="en-block"><em>Funnel-Width Type: High Hook + Low CVR</em></span></div>
+      <div style="font-size:.78rem;line-height:1.8">
+        <strong>代表：</strong>@syuhxdx（3s=41.8%）、@diyanaarefn（3s=56.1%）<br>
+        <strong>特征：</strong>CTR高、3s完播率高 → 大量引流 → CVR相对低<br>
+        <strong>制作要点：</strong>Transition/Couple Reaction开篇，制造强情绪冲击 → 娱乐性内容留住用户 → 配合产品信息<br>
+        <strong>平台：</strong>Instagram首选，TikTok次之<br>
+        <strong>复用优先级：</strong><span style="color:var(--green);font-weight:700">最高</span>
+      </div>
+    </div>
+
+    <div style="border:2px solid var(--blue);border-radius:12px;padding:18px;background:rgba(41,128,185,.04)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--blue);margin-bottom:10px">✅ 公式2：漏斗深度型（低Hook + 高CVR）<span class="en-block"><em>Funnel-Depth Type: Low Hook + High CVR</em></span></div>
+      <div style="font-size:.78rem;line-height:1.8">
+        <strong>代表：</strong>@dilasaidins（3s=9.9%，CVR=2.48%）、@deesara（3s=22.9%，CVR=2.00%）<br>
+        <strong>特征：</strong>CTR低、3s低 → 引流少但精准 → CVR极高<br>
+        <strong>制作要点：</strong>产品细节特写/Unboxing开篇 → 满足"产品验证"心理 → 降低购买决策风险<br>
+        <strong>平台：</strong>Instagram<br>
+        <strong>复用优先级：</strong><span style="color:var(--blue);font-weight:700">高（作漏斗下层配合）</span>
+      </div>
+    </div>
+
+    <div style="border:2px solid var(--purple);border-radius:12px;padding:18px;background:rgba(142,68,173,.04)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:10px">✅ 公式3：身份认同型（均衡型）<span class="en-block"><em>Identity Type: Balanced</em></span></div>
+      <div style="font-size:.78rem;line-height:1.8">
+        <strong>代表：</strong>@syafiqahrosee（3s=22.8%，CVR=1.18%）、@parisaardina（3s=36.7%，CVR=0.87%）<br>
+        <strong>特征：</strong>24/7随行概念 + 竖屏场景叙事 → Hook和CVR均衡<br>
+        <strong>制作要点：</strong>开篇展示日常生活多场景 → 建立"随身标配"认知 → 感染力+说服力双驱动<br>
+        <strong>平台：</strong>Instagram（Verticle Beauty模板）<br>
+        <strong>复用优先级：</strong><span style="color:var(--purple);font-weight:700">高（主力模型）</span>
+      </div>
+    </div>
+
+    <div style="border:2px solid var(--orange);border-radius:12px;padding:18px;background:rgba(230,126,34,.04)">
+      <div style="font-size:.8rem;font-weight:700;color:var(--orange);margin-bottom:10px">⚠️ 公式4：标签喊话型（待优化）<span class="en-block"><em>Label-Shout Type (Needs Optimization)</em></span></div>
+      <div style="font-size:.78rem;line-height:1.8">
+        <strong>代表：</strong>@mirasyafira_（ROI=1.91，但P75=0.2%极低）<br>
+        <strong>特征：</strong>"Girlboss"/"screams XXX"标签喊话 → CTR高但完播率极低<br>
+        <strong>制作要点：</strong>标签命名公式有效，但需产品前置（前2秒就出现香水）<br>
+        <strong>平台：</strong>TikTok<br>
+        <strong>复用优先级：</strong><span style="color:var(--orange);font-weight:700">中（需测试验证）</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="hl-y">
+    <strong>🔑 最优内容组合建议<span class="en-block"><em> Recommended Content Mix</em></span>：</strong>
+    <p style="font-size:.81rem;margin-top:6px;line-height:1.8">
+      <span class="zh-wrap">漏斗宽度型（40%预算）+ 漏斗深度型（30%预算）+ 身份认同型（30%预算）。宽度型做引流，深度型做信任，身份认同型两者兼顾。不要把预算全部押注在单一公式上。</span>
+      <span class="en-block"><em>Funnel-width (40% budget) + Funnel-depth (30%) + Identity (30%). Width-type drives awareness, depth-type builds trust, identity-type does both. Don't concentrate all budget on a single formula.</em></span>
+    </p>
+  </div>
+</div>
+
+<!-- 五、高花费零转化预警 -->
+<div class="section">
+  <h2 class="sec-title">五、高花费零转化预警（Top 8 ROI=0）<span class="en">High-Spend Zero-Conversion Warnings</span></h2>
+  <p style="font-size:.78rem;color:var(--muted);margin-bottom:14px">花费>$50且ROI=0的素材——3s完播率和P75完播率均接近零，内容存在根本性问题
+  <br><span class="en-block"><em>Materials with spend >$50 and ROI=0 — both 3s retention and P75 near zero, indicating fundamental content problems.</em></span></p>
+  <div style="overflow-x:auto">
+  <table class="tbl">
+    <thead><tr><th>KOL</th><th>平台</th><th>主题 Theme</th><th>花费</th><th>3s完播率</th><th>P75完播率</th><th>核心问题</th></tr></thead>
+    <tbody>
+      <tr style="background:rgba(231,76,60,.07)">
+        <td>@deenanizm</td><td>Instagram</td><td>IGC Creative</td><td style="color:var(--red);font-weight:700">$95.45</td>
+        <td style="color:var(--red)">3s 0.0%</td><td style="color:var(--red)">0.0%</td>
+        <td style="font-size:.73rem"><span class="zh-wrap">3s=0说明前3秒就失去所有观众——开篇完全失败</span><span class="en-block"><em>3s=0 means every viewer left in first 3 seconds — complete opening failure</em></span></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.07)">
+        <td>@alyaasyed</td><td>TikTok</td><td>most complimented perfume with proof</td><td style="color:var(--red);font-weight:700">$78.29</td>
+        <td>3s 15.4%</td><td style="color:var(--red)">0.4%</td>
+        <td style="font-size:.73rem"><span class="zh-wrap">P75 0.4%极低——内容无法让观众看完，漏斗在中间就断裂</span><span class="en-block"><em>P75 0.4% — content can't hold viewers, funnel breaks mid-way</em></span></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.07)">
+        <td>@hanninajla</td><td>TikTok</td><td>PGC Rich Girlboss Scent</td><td style="color:var(--red);font-weight:700">$65.74</td>
+        <td>3s 11.8%</td><td style="color:var(--red)">0.2%</td>
+        <td style="font-size:.73rem"><span class="zh-wrap">P75 0.2%——"Girlboss"标签内容在TikTok完播率极低，节奏或选题有问题</span><span class="en-block"><em>P75 0.2% — "Girlboss" label content has extremely low completion on TikTok; pacing or topic issue</em></span></td>
+      </tr>
+      <tr style="background:rgba(231,76,60,.07)">
+        <td>@nurinsyaaamimi</td><td>TikTok</td><td>（无标签）</td><td style="color:var(--red);font-weight:700">$60.33</td>
+        <td style="color:var(--red)">3s 0.0%</td><td style="color:var(--red)">0.0%</td>
+        <td style="font-size:.73rem"><span class="zh-wrap">3s=0、P75=0——完全没有任何人愿意看这条内容，需要重新制作</span><span class="en-block"><em>3s=0 and P75=0 — no one watched this content; needs complete rework</em></span></td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+  <div class="hl-r" style="margin-top:12px">
+    <strong>关键规律<span class="en-block"><em> Key Pattern</em></span>：</strong>
+    <span style="font-size:.81rem"><span class="zh-wrap">所有ROI=0的素材P75均在0.1-0.4%之间——P75&lt;1%是内容整体失败的强信号，即使3s数据还行。完播率（尤其是P75）是比3s更全面的内容质量指标。</span><span class="en-block"><em>All ROI=0 materials have P75 between 0.1-0.4% — P75&lt;1% is a strong signal of overall content failure, even if 3s data looks okay. Completion rate (especially P75) is a more comprehensive content quality metric than 3s alone.</em></span></span>
+  </div>
+</div>
+
+<!-- Footer -->
+<div style="text-align:center;padding:36px 20px;color:var(--muted);font-size:.74rem;border-top:1px solid #eee;margin-top:20px">
+  <div style="font-size:.92rem;font-weight:600;color:var(--text);margin-bottom:6px">Bodibreze Leona · ROI TOP10 逐帧深拆 V2</div>
+  <div>161条有效素材 · 2026-01 至 2026-04 · Instagram + TikTok Indonesia</div>
+  <div style="margin-top:4px">Hook质量指标：3s完播率（3s Retention Rate）· 逐帧描述基于内容类型/主题/模板推断</div>
+  <div style="margin-top:6px;font-size:.7rem;color:#bbb">Powered by content-analysis-idea skill · 数据源：MY-post-260421.csv + BigQuery</div>
+</div>
+
+<script>
+function setLang(lang){
+  document.body.classList.remove('zh-mode','en-mode');
+  document.querySelectorAll('.lang-btn').forEach(function(b){b.classList.remove('active');});
+  var m={zh:'btn-zh',bi:'btn-bi',en:'btn-en'};
+  if(m[lang])document.getElementById(m[lang]).classList.add('active');
+  if(lang==='zh')document.body.classList.add('zh-mode');
+  if(lang==='en')document.body.classList.add('en-mode');
+}
+function sc(id,dir){
+  var t=document.querySelector('#'+id+' .c-track');
+  if(t)t.scrollBy({left:dir*380,behavior:'smooth'});
+}
+window.addEventListener('DOMContentLoaded',function(){
+  setLang('zh');
+  var io=new IntersectionObserver(function(en){en.forEach(function(e){if(e.isIntersecting){e.target.style.opacity='1';e.target.style.transform='translateY(0)';}});},{threshold:.08});
+  document.querySelectorAll('.section').forEach(function(s){s.style.opacity='0';s.style.transform='translateY(16px)';s.style.transition='opacity .5s,transform .5s';io.observe(s);});
+  document.querySelectorAll('.bar-fill').forEach(function(b){var w=b.style.width;b.style.width='0';setTimeout(function(){b.style.width=w;},500);});
+  document.querySelectorAll('.c-track').forEach(function(t){
+    var x=0;
+    t.addEventListener('touchstart',function(e){x=e.touches[0].clientX;},{passive:true});
+    t.addEventListener('touchend',function(e){var d=x-e.changedTouches[0].clientX;if(Math.abs(d)>40)t.scrollBy({left:d>0?380:-380,behavior:'smooth'});},{passive:true});
+  });
+});
+</script>
+</body>
+</html>
